@@ -88,6 +88,17 @@
         "rule": "After drafting tests, review whether existing helpers can replace bespoke test code and use them when they make the tests cleaner.",
         "source": "shared-profile",
         "createdAt": "2026-04-01T00:00:00.000Z"
+      },
+      {
+        "id": "local-docs-default-root",
+        "category": "documentation_workflow",
+        "scope": "global",
+        "appliesWhen": [
+          "local-generated-docs-relevant"
+        ],
+        "rule": "For generated non-committed documents (plans, brainstorms, knowledge references), use ~/.assistant-preferences/local-docs/<project-name>/ as the default output location. Organize under shared/, plans/, knowledge-references/, brainstorm/, or misc/ subdirectories. Only write into a repository's own docs directory when the document is explicitly intended to be committed or shared.",
+        "source": "shared-profile",
+        "createdAt": "2026-04-01T00:00:00.000Z"
       }
     ],
     "repeatableActions": [],

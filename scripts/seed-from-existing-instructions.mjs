@@ -17,6 +17,7 @@ const EXPECTED_PERSONAL_RULE_FRAGMENTS = [
 	"Test-driven development workflow must always be preferred when developing a new feature.",
 	"Repeated code should be broken out to a common helper when it improves readability.",
 	"After drafting tests, review whether existing helpers can replace bespoke test code and use them when they make the tests cleaner.",
+	"For generated non-committed documents (plans, brainstorms, knowledge references), use ~/.assistant-preferences/local-docs/<project-name>/ as the default output location.",
 ];
 
 const EXPECTED_MINIMAL_RULE_FRAGMENTS = [

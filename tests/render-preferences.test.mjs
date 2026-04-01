@@ -140,6 +140,17 @@ test("renderer merges base, selected profile, and local overlay", function() {
 	assert.match(codex, /Local overlay rule/);
 });
 
+test("renderer includes the local-docs default location rule from personal profile", function() {
+	const { homeDir } = setup();
+	render(homeDir);
+
+	const codex = fs.readFileSync(path.join(homeDir, ".codex", "instructions.md"), "utf8");
+	assert.ok(
+		codex.includes("~/.assistant-preferences/local-docs/<project-name>/"),
+		"Missing local-docs default location rule"
+	);
+});
+
 test("renderer writes only for detected assistant homes", function() {
 	const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "assistant-prefs-"));
 	const homeDir = path.join(tmpDir, "home");

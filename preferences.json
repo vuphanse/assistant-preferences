@@ -13,72 +13,7 @@
     "repeatPromptBehavior": "do-not-reask-already-memorized-preferences"
   },
   "preferences": {
-    "hard": [
-      {
-        "id": "describe-approach-before-coding",
-        "category": "workflow",
-        "scope": "global",
-        "rule": "Before writing any code, describe your approach and wait for approval.",
-        "source": "migrated",
-        "createdAt": "2026-03-25T00:00:00Z"
-      },
-      {
-        "id": "ask-clarifying-questions",
-        "category": "workflow",
-        "scope": "global",
-        "rule": "If the requirements are ambiguous, ask clarifying questions before starting implementation.",
-        "source": "migrated",
-        "createdAt": "2026-03-25T00:00:00Z"
-      },
-      {
-        "id": "list-edge-cases-after-code",
-        "category": "workflow",
-        "scope": "global",
-        "rule": "After finishing code changes, list the edge cases and suggest test cases to cover them.",
-        "source": "migrated",
-        "createdAt": "2026-03-25T00:00:00Z"
-      },
-      {
-        "id": "break-large-tasks",
-        "category": "workflow",
-        "scope": "global",
-        "rule": "If a task requires changes to more than 3 files, stop and break it into smaller tasks first.",
-        "source": "migrated",
-        "createdAt": "2026-03-25T00:00:00Z"
-      },
-      {
-        "id": "reproduce-bug-with-test",
-        "category": "debugging",
-        "scope": "global",
-        "rule": "When there is a bug, start by writing a test that reproduces it, then fix it until the test passes.",
-        "source": "migrated",
-        "createdAt": "2026-03-25T00:00:00Z"
-      },
-      {
-        "id": "reflect-on-corrections",
-        "category": "learning",
-        "scope": "global",
-        "rule": "Every time the user corrects you, reflect on what you did wrong and come up with a plan to never make the same mistake again.",
-        "source": "migrated",
-        "createdAt": "2026-03-25T00:00:00Z"
-      },
-      {
-        "id": "do-not-hallucinate",
-        "category": "safety",
-        "scope": "global",
-        "rule": "When in doubt or not sure about the solution, do not hallucinate. Ask the user for guidance, recommendations, or a suggested approach.",
-        "source": "migrated",
-        "createdAt": "2026-03-25T00:00:00Z"
-      },
-      {
-        "id": "prefer-tdd",
-        "category": "workflow",
-        "scope": "global",
-        "rule": "Test-driven development workflow must always be preferred when developing a new feature.",
-        "source": "migrated",
-        "createdAt": "2026-03-25T00:00:00Z"
-      }
-    ],
+    "hard": [],
     "conditional": [
       {
         "id": "apply-personal-preferences-first",
@@ -88,8 +23,8 @@
           "personal-preference-relevant"
         ],
         "rule": "Apply the user's personal preferences first whenever they are relevant.",
-        "source": "user-approved-policy",
-        "createdAt": "2026-03-25T00:00:00Z"
+        "source": "shared-base",
+        "createdAt": "2026-04-01T00:00:00.000Z"
       },
       {
         "id": "apply-both-when-no-category-level-contradiction",
@@ -100,8 +35,8 @@
           "no-contradiction-with-project-plugin-or-skill-rules-in-same-category"
         ],
         "rule": "If another plugin, skill, or project-scoped rule does not contradict the personal preference in the same category, apply both.",
-        "source": "user-approved-policy",
-        "createdAt": "2026-03-25T00:00:00Z"
+        "source": "shared-base",
+        "createdAt": "2026-04-01T00:00:00.000Z"
       },
       {
         "id": "ask-on-category-level-contradiction",
@@ -111,8 +46,8 @@
           "contradiction-between-personal-and-project-plugin-or-skill-rule-in-same-category"
         ],
         "rule": "If a contradiction exists between a personal preference and a plugin, skill, or project-scoped rule in the same category, ask the user which rule should apply before acting unless a matching memorized conflict resolution already exists.",
-        "source": "user-approved-policy",
-        "createdAt": "2026-03-25T00:00:00Z"
+        "source": "shared-base",
+        "createdAt": "2026-04-01T00:00:00.000Z"
       },
       {
         "id": "ask-to-memorize-durable-feedback",
@@ -122,8 +57,8 @@
           "user-gives-repeatable-correction-or-preference"
         ],
         "rule": "Summarize the feedback as a generalized preference and ask whether to memorize it for future sessions.",
-        "source": "user-approved-design",
-        "createdAt": "2026-03-25T00:00:00Z"
+        "source": "shared-base",
+        "createdAt": "2026-04-01T00:00:00.000Z"
       },
       {
         "id": "ask-to-memorize-reusable-conflict-resolution",
@@ -133,88 +68,11 @@
           "user-resolves-contradiction-in-a-reusable-way"
         ],
         "rule": "When the user resolves a contradiction in a reusable way, ask whether to memorize that conflict resolution for future sessions.",
-        "source": "user-approved-policy",
-        "createdAt": "2026-03-25T00:00:00Z"
-      },
-      {
-        "id": "extract-repeated-review-code",
-        "category": "code_review",
-        "scope": "global",
-        "appliesWhen": [
-          "manual_review_of_agent_generated_code"
-        ],
-        "rule": "Repeated code should be broken out to a common helper when it improves readability.",
-        "source": "user-confirmed",
-        "createdAt": "2026-03-25T10:12:36.361Z"
-      },
-      {
-        "id": "refine-tests-with-existing-helpers",
-        "category": "testing",
-        "scope": "global",
-        "appliesWhen": [
-          "after-drafting-tests"
-        ],
-        "rule": "After drafting tests, review whether existing helpers can replace bespoke test code and use them when they make the tests cleaner.",
-        "source": "user-confirmed",
-        "createdAt": "2026-03-26T17:58:50.050Z"
-      },
-      {
-        "id": "favro-local-generated-docs-root",
-        "category": "documentation_workflow",
-        "scope": "repo:Favro",
-        "appliesWhen": [
-          "repo-favro",
-          "local-generated-docs-relevant"
-        ],
-        "rule": "For Favro work, use /Users/vu/.assistant-preferences/local-docs/Favro/ as the machine-local docs root for generated non-committed documents. When gathering context, check both /Users/vu/Development/Favro/Docs/ and /Users/vu/.assistant-preferences/local-docs/Favro/. Write local generated docs under shared/, plans/, knowledge-references/, brainstorm/, or misc/ in the local-docs root by default, and only write into repository Docs/ when the document is explicitly intended to be committed or shared.",
-        "source": "user-confirmed",
-        "createdAt": "2026-04-01T07:33:34.189Z"
+        "source": "shared-base",
+        "createdAt": "2026-04-01T00:00:00.000Z"
       }
     ],
-    "repeatableActions": [
-      {
-        "id": "default-mainapp-typecheck",
-        "category": "verification",
-        "scope": "repo:Favro",
-        "appliesWhen": [
-          "typescript_edit_in_mainapp"
-        ],
-        "rule": "Prefer make typecheck-MainApp as the default verification command.",
-        "source": "user-confirmed",
-        "createdAt": "2026-03-25T10:14:10.458Z"
-      }
-    ],
-    "conflictResolutions": [
-      {
-        "id": "contradiction-resolution-template",
-        "category": "code_review",
-        "scope": "global",
-        "appliesWhen": [
-          "manual_review_of_agent_generated_code",
-          "repetition-affects-readability"
-        ],
-        "source": "user-confirmed",
-        "createdAt": "2026-03-25T10:12:50.636Z",
-        "whenPersonalRule": "extract-repeated-review-code",
-        "whenExternalRule": "project-prefers-inline-repetition",
-        "chosenSide": "project",
-        "rationale": "This subsystem intentionally keeps paired logic inline for local comparison."
-      },
-      {
-        "id": "code-review-helper-extraction-vs-inline-subsystem-rule",
-        "category": "code_review",
-        "scope": "global",
-        "appliesWhen": [
-          "manual_review_of_agent_generated_code",
-          "repetition-affects-readability"
-        ],
-        "source": "user-confirmed",
-        "createdAt": "2026-03-25T10:14:21.351Z",
-        "whenPersonalRule": "extract-repeated-review-code",
-        "whenExternalRule": "project-prefers-inline-repetition",
-        "chosenSide": "project",
-        "rationale": "This subsystem intentionally keeps paired logic inline for local comparison."
-      }
-    ]
+    "repeatableActions": [],
+    "conflictResolutions": []
   }
 }

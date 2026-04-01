@@ -4,27 +4,20 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+
+const testsDir = path.dirname(fileURLToPath(import.meta.url));
+const SCRIPT = path.join(testsDir, "..", "scripts", "memorize-preference.mjs");
 
 function makePrefsFile() {
 	const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "assistant-memory-"));
-	const prefsPath = path.join(tmpDir, "preferences.json");
+	const prefsPath = path.join(tmpDir, "preferences.local.json");
 	fs.writeFileSync(prefsPath, JSON.stringify({
-		version: 1,
-		policy: {
-			nonOverridable: ["system-safety", "platform-safety"],
-			defaultScope: "global",
-			defaultBehavior: "apply-personal-preferences-first",
-			contradictionBehavior: "ask-user-before-choosing",
-			contradictionScope: "category-level",
-			memorizationBehavior: "ask-before-persisting",
-			repeatPromptBehavior: "do-not-reask-already-memorized-preferences"
-		},
+		selectedProfile: "personal",
 		preferences: { hard: [], conditional: [], repeatableActions: [], conflictResolutions: [] }
 	}, null, 2));
 	return prefsPath;
 }
-
-const SCRIPT = "/Users/vu/.assistant-preferences/scripts/memorize-preference.mjs";
 
 test("memorize-preference appends a new conditional preference without duplicating ids", function() {
 	const prefsPath = makePrefsFile();
@@ -41,6 +34,7 @@ test("memorize-preference appends a new conditional preference without duplicati
 	]);
 
 	const saved = JSON.parse(fs.readFileSync(prefsPath, "utf8"));
+	assert.equal(saved.selectedProfile, "personal");
 	assert.equal(saved.preferences.conditional.length, 1);
 	assert.equal(saved.preferences.conditional[0].id, "extract-repeated-review-code");
 });

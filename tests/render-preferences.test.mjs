@@ -4,6 +4,10 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const testsDir = path.dirname(fileURLToPath(import.meta.url));
+const renderScript = path.join(testsDir, "..", "scripts", "render-preferences.mjs");
 
 function setup() {
 	const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "assistant-prefs-"));
@@ -13,10 +17,11 @@ function setup() {
 	return { tmpDir, homeDir };
 }
 
-function render(homeDir) {
+function render(homeDir, extraArgs = []) {
 	return execFileSync("node", [
-		"/Users/vu/.assistant-preferences/scripts/render-preferences.mjs",
+		renderScript,
 		"--home", homeDir,
+		...extraArgs,
 	], { stdio: "pipe", encoding: "utf8" });
 }
 
@@ -104,4 +109,45 @@ test("re-rendering replaces only the sentinel section", function() {
 		assert.ok(!content.includes("old content"), "Old content between markers was not replaced");
 		assert.ok(content.includes("Apply the user's personal preferences first"), "New content not rendered");
 	}
+});
+
+test("renderer merges base, selected profile, and local overlay", function() {
+	const { homeDir } = setup();
+	const localFile = path.join(homeDir, "preferences.local.json");
+	fs.writeFileSync(localFile, JSON.stringify({
+		selectedProfile: "personal",
+		preferences: {
+			hard: [
+				{
+					id: "local-hard-rule",
+					category: "workflow",
+					scope: "global",
+					rule: "Local overlay rule.",
+					source: "local-machine",
+					createdAt: "2026-04-01T00:00:00.000Z"
+				}
+			],
+			conditional: [],
+			repeatableActions: [],
+			conflictResolutions: []
+		}
+	}, null, 2));
+
+	render(homeDir, ["--local-file", localFile]);
+
+	const codex = fs.readFileSync(path.join(homeDir, ".codex", "instructions.md"), "utf8");
+	assert.match(codex, /Apply the user's personal preferences first/);
+	assert.match(codex, /Before writing any code, describe your approach and wait for approval/);
+	assert.match(codex, /Local overlay rule/);
+});
+
+test("renderer writes only for detected assistant homes", function() {
+	const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "assistant-prefs-"));
+	const homeDir = path.join(tmpDir, "home");
+	fs.mkdirSync(path.join(homeDir, ".codex"), { recursive: true });
+
+	render(homeDir);
+
+	assert.equal(fs.existsSync(path.join(homeDir, ".codex", "instructions.md")), true);
+	assert.equal(fs.existsSync(path.join(homeDir, ".claude", "CLAUDE.md")), false);
 });

@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { parseArgs } from "node:util";
+import { getLocalPreferencesPath, getRepoRoot } from "./lib/project-paths.mjs";
 
 const KIND_TO_KEY = {
 	"hard": "hard",
@@ -10,9 +11,11 @@ const KIND_TO_KEY = {
 	"conflict-resolution": "conflictResolutions",
 };
 
+const repoRoot = getRepoRoot();
+
 const { values } = parseArgs({
 	options: {
-		file: { type: "string", default: "/Users/vu/.assistant-preferences/preferences.json" },
+		file: { type: "string" },
 		kind: { type: "string" },
 		id: { type: "string" },
 		category: { type: "string" },
@@ -27,6 +30,20 @@ const { values } = parseArgs({
 	},
 });
 
+const filePath = getLocalPreferencesPath(repoRoot, values.file);
+
+if (!fs.existsSync(filePath)) {
+	fs.writeFileSync(filePath, JSON.stringify({
+		selectedProfile: "personal",
+		preferences: {
+			hard: [],
+			conditional: [],
+			repeatableActions: [],
+			conflictResolutions: [],
+		},
+	}, null, 2) + "\n");
+}
+
 const kind = values.kind;
 const key = KIND_TO_KEY[kind];
 if (!key) {
@@ -34,7 +51,7 @@ if (!key) {
 	process.exit(1);
 }
 
-const data = JSON.parse(fs.readFileSync(values.file, "utf8"));
+const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
 const entries = data.preferences[key];
 
 const nextEntry = {
@@ -74,12 +91,13 @@ if (values.replace) {
 	entries.push(nextEntry);
 }
 
-fs.writeFileSync(values.file, JSON.stringify(data, null, 2) + "\n");
+fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + "\n");
 console.log(`Added ${kind}: ${nextEntry.id}`);
 
 // Auto-render instruction files
-const scriptsDir = path.dirname(new URL(import.meta.url).pathname);
-const renderScript = path.join(scriptsDir, "render-preferences.mjs");
+const renderScript = path.join(repoRoot, "scripts", "render-preferences.mjs");
+const renderArgs = [];
+if (values.file) renderArgs.push("--local-file", values.file);
 if (fs.existsSync(renderScript)) {
-	execFileSync("node", [renderScript], { stdio: "inherit" });
+	execFileSync("node", [renderScript, ...renderArgs], { stdio: "inherit" });
 }

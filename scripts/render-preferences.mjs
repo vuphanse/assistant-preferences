@@ -1,17 +1,24 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
+import { getHomeDir, getRepoRoot, loadEffectivePreferences } from "./lib/project-paths.mjs";
 
 const BEGIN = "<!-- BEGIN PERSONAL-PREFERENCES (generated — do not edit manually) -->";
 const END = "<!-- END PERSONAL-PREFERENCES -->";
 
 const { values } = parseArgs({
-	options: { home: { type: "string", default: "/Users/vu" } },
+	options: {
+		home: { type: "string" },
+		"local-file": { type: "string" },
+	},
 });
 
-const homeDir = values.home;
-const prefsPath = "/Users/vu/.assistant-preferences/preferences.json";
-const data = JSON.parse(fs.readFileSync(prefsPath, "utf8"));
+const repoRoot = getRepoRoot();
+const homeDir = getHomeDir(values.home);
+const data = loadEffectivePreferences({
+	repoRoot,
+	localFile: values["local-file"],
+});
 
 function renderBody(data) {
 	const lines = [
@@ -36,7 +43,7 @@ function renderBody(data) {
 
 	// Conditional preferences (non-policy ones)
 	const userConditional = data.preferences.conditional.filter(
-		p => p.source !== "user-approved-policy" && p.source !== "user-approved-design"
+		p => p.source !== "shared-base" && p.source !== "user-approved-policy" && p.source !== "user-approved-design"
 	);
 	if (userConditional.length > 0) {
 		lines.push("");
@@ -86,7 +93,24 @@ function writeFile(targetPath, body) {
 
 const body = renderBody(data);
 
-writeFile(path.join(homeDir, ".codex/instructions.md"), body);
-writeFile(path.join(homeDir, ".claude/CLAUDE.md"), body);
+const targets = [
+	{
+		name: "codex",
+		isInstalled: fs.existsSync(path.join(homeDir, ".codex")),
+		targetPath: path.join(homeDir, ".codex", "instructions.md"),
+	},
+	{
+		name: "claude",
+		isInstalled: fs.existsSync(path.join(homeDir, ".claude")),
+		targetPath: path.join(homeDir, ".claude", "CLAUDE.md"),
+	},
+].filter(target => target.isInstalled);
 
-console.log("Rendered preferences to both instruction files.");
+for (const target of targets) {
+	writeFile(target.targetPath, body);
+}
+
+if (targets.length === 0)
+	console.log("No supported assistant homes detected. Nothing rendered.");
+else
+	console.log(`Rendered preferences for: ${targets.map(target => target.name).join(", ")}`);

@@ -4,10 +4,9 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { scriptPath } from "./helpers/test-paths.mjs";
 
-const testsDir = path.dirname(fileURLToPath(import.meta.url));
-const renderScript = path.join(testsDir, "..", "scripts", "render-preferences.mjs");
+const renderScript = scriptPath("render-preferences.mjs");
 
 function setup() {
 	const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "assistant-prefs-"));
@@ -150,4 +149,26 @@ test("renderer writes only for detected assistant homes", function() {
 
 	assert.equal(fs.existsSync(path.join(homeDir, ".codex", "instructions.md")), true);
 	assert.equal(fs.existsSync(path.join(homeDir, ".claude", "CLAUDE.md")), false);
+});
+
+test("renderer fails clearly when selectedProfile is missing", function() {
+	const { homeDir } = setup();
+	const localFile = path.join(homeDir, "preferences.local.json");
+	fs.writeFileSync(localFile, JSON.stringify({
+		selectedProfile: "missing-profile",
+		preferences: {
+			hard: [],
+			conditional: [],
+			repeatableActions: [],
+			conflictResolutions: [],
+		},
+	}, null, 2));
+
+	assert.throws(function() {
+		execFileSync("node", [
+			renderScript,
+			"--home", homeDir,
+			"--local-file", localFile,
+		], { stdio: "pipe" });
+	}, /Unknown selectedProfile/);
 });

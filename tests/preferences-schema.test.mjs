@@ -1,14 +1,10 @@
 import fs from "node:fs";
-import path from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
-
-import { fileURLToPath } from "node:url";
-
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+import { repoFilePath } from "./helpers/test-paths.mjs";
 
 function readJson(relativePath) {
-	return JSON.parse(fs.readFileSync(path.join(repoRoot, relativePath), "utf8"));
+	return JSON.parse(fs.readFileSync(repoFilePath(relativePath), "utf8"));
 }
 
 test("shared config files expose the expected top-level structure", function() {

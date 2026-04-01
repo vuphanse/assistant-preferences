@@ -1,0 +1,96 @@
+{
+  "preferences": {
+    "hard": [
+      {
+        "id": "describe-approach-before-coding",
+        "category": "workflow",
+        "scope": "global",
+        "rule": "Before writing any code, describe your approach and wait for approval.",
+        "source": "shared-profile",
+        "createdAt": "2026-04-01T00:00:00.000Z"
+      },
+      {
+        "id": "ask-clarifying-questions",
+        "category": "workflow",
+        "scope": "global",
+        "rule": "If the requirements are ambiguous, ask clarifying questions before starting implementation.",
+        "source": "shared-profile",
+        "createdAt": "2026-04-01T00:00:00.000Z"
+      },
+      {
+        "id": "list-edge-cases-after-code",
+        "category": "workflow",
+        "scope": "global",
+        "rule": "After finishing code changes, list the edge cases and suggest test cases to cover them.",
+        "source": "shared-profile",
+        "createdAt": "2026-04-01T00:00:00.000Z"
+      },
+      {
+        "id": "break-large-tasks",
+        "category": "workflow",
+        "scope": "global",
+        "rule": "If a task requires changes to more than 3 files, stop and break it into smaller tasks first.",
+        "source": "shared-profile",
+        "createdAt": "2026-04-01T00:00:00.000Z"
+      },
+      {
+        "id": "reproduce-bug-with-test",
+        "category": "debugging",
+        "scope": "global",
+        "rule": "When there is a bug, start by writing a test that reproduces it, then fix it until the test passes.",
+        "source": "shared-profile",
+        "createdAt": "2026-04-01T00:00:00.000Z"
+      },
+      {
+        "id": "reflect-on-corrections",
+        "category": "learning",
+        "scope": "global",
+        "rule": "Every time the user corrects you, reflect on what you did wrong and come up with a plan to never make the same mistake again.",
+        "source": "shared-profile",
+        "createdAt": "2026-04-01T00:00:00.000Z"
+      },
+      {
+        "id": "do-not-hallucinate",
+        "category": "safety",
+        "scope": "global",
+        "rule": "When in doubt or not sure about the solution, do not hallucinate. Ask the user for guidance, recommendations, or a suggested approach.",
+        "source": "shared-profile",
+        "createdAt": "2026-04-01T00:00:00.000Z"
+      },
+      {
+        "id": "prefer-tdd",
+        "category": "workflow",
+        "scope": "global",
+        "rule": "Test-driven development workflow must always be preferred when developing a new feature.",
+        "source": "shared-profile",
+        "createdAt": "2026-04-01T00:00:00.000Z"
+      }
+    ],
+    "conditional": [
+      {
+        "id": "extract-repeated-review-code",
+        "category": "code_review",
+        "scope": "global",
+        "appliesWhen": [
+          "manual_review_of_agent_generated_code"
+        ],
+        "rule": "Repeated code should be broken out to a common helper when it improves readability.",
+        "source": "shared-profile",
+        "createdAt": "2026-04-01T00:00:00.000Z"
+      },
+      {
+        "id": "refine-tests-with-existing-helpers",
+        "category": "testing",
+        "scope": "global",
+        "appliesWhen": [
+          "after-drafting-tests"
+        ],
+        "rule": "After drafting tests, review whether existing helpers can replace bespoke test code and use them when they make the tests cleaner.",
+        "source": "shared-profile",
+        "createdAt": "2026-04-01T00:00:00.000Z"
+      }
+    ],
+    "repeatableActions": [],
+    "conflictResolutions": []
+  }
+}

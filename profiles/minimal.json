@@ -1,0 +1,17 @@
+{
+  "preferences": {
+    "hard": [
+      {
+        "id": "do-not-hallucinate",
+        "category": "safety",
+        "scope": "global",
+        "rule": "When in doubt or not sure about the solution, do not hallucinate. Ask the user for guidance, recommendations, or a suggested approach.",
+        "source": "shared-profile",
+        "createdAt": "2026-04-01T00:00:00.000Z"
+      }
+    ],
+    "conditional": [],
+    "repeatableActions": [],
+    "conflictResolutions": []
+  }
+}

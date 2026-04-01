@@ -1,0 +1,4 @@
+local-docs/
+preferences.local.json
+.DS_Store
+*.log

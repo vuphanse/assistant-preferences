@@ -1,8 +1,17 @@
 #!/bin/zsh
 set -euo pipefail
 
-mkdir -p /Users/vu/.agents/skills
-mkdir -p /Users/vu/.claude/skills
+script_dir="$(cd -- "$(dirname -- "${0:A}")" && pwd)"
+repo_root="$(cd -- "$script_dir/.." && pwd)"
+skill_source="$repo_root/skills/personal-preferences"
 
-ln -sfn /Users/vu/.assistant-preferences/skills/personal-preferences /Users/vu/.agents/skills/personal-preferences
-ln -sfn /Users/vu/.assistant-preferences/skills/personal-preferences /Users/vu/.claude/skills/personal-preferences
+if [ -d "$HOME/.codex" ]; then
+	# Codex is detected via ~/.codex, but the shared skill is discovered from ~/.agents/skills.
+	mkdir -p "$HOME/.agents/skills"
+	ln -sfn "$skill_source" "$HOME/.agents/skills/personal-preferences"
+fi
+
+if [ -d "$HOME/.claude" ]; then
+	mkdir -p "$HOME/.claude/skills"
+	ln -sfn "$skill_source" "$HOME/.claude/skills/personal-preferences"
+fi

@@ -22,3 +22,15 @@ test("shared config files expose the expected top-level structure", function() {
 		assert.ok(Array.isArray(data.preferences.conflictResolutions));
 	}
 });
+
+test("tracked shared files do not contain Favro-specific local rules", function() {
+	for (const relativePath of [
+		"preferences.json",
+		"profiles/minimal.json",
+		"profiles/personal.json",
+	]) {
+		const content = fs.readFileSync(repoFilePath(relativePath), "utf8");
+		assert.equal(content.includes("favro-local-generated-docs-root"), false);
+		assert.equal(content.includes("/Users/vu/Development/Favro"), false);
+	}
+});

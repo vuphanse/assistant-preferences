@@ -5,13 +5,13 @@
 - Shared tracked base: `preferences.json`
 - Shared tracked profiles: `profiles/minimal.json`, `profiles/personal.json`
 - Untracked machine-local file: `preferences.local.json`
-- Stable runtime path: `~/.assistant-preferences`
+- Stable runtime path: `~/.ai-pref-nsync`
 - Real repository location: any user-chosen checkout path
 
 ## File Structure
 
 ```
-/path/to/assistant-preferences/
+/path/to/ai-pref-nsync/
 ├── preferences.json                          # Shared base (policy and defaults)
 ├── preferences.local.example.json            # Template for the local machine file
 ├── profiles/
@@ -86,7 +86,7 @@ Edit `preferences.local.json` to add machine-specific rules. Example:
           "repo-favro",
           "local-generated-docs-relevant"
         ],
-        "rule": "For Favro work, use ~/.assistant-preferences/local-docs/Favro/ as the machine-local docs root for generated non-committed documents.",
+        "rule": "For Favro work, use ~/.ai-pref-nsync/local-docs/Favro/ as the machine-local docs root for generated non-committed documents.",
         "source": "local-machine",
         "createdAt": "2026-04-01T00:00:00.000Z"
       }

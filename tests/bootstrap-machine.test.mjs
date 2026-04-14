@@ -32,7 +32,7 @@ test("bootstrap creates the runtime symlink and local config from the current ch
 			env: { ...process.env, HOME: tmpHome },
 			stdio: "pipe",
 		});
-		assert.equal(fs.realpathSync(path.join(tmpHome, ".assistant-preferences")), fs.realpathSync(repoRoot));
+		assert.equal(fs.realpathSync(path.join(tmpHome, ".ai-pref-nsync")), fs.realpathSync(repoRoot));
 		assert.equal(fs.existsSync(localPrefsPath), true);
 		assert.equal(fs.lstatSync(path.join(tmpHome, ".agents", "skills", "personal-preferences")).isSymbolicLink(), true);
 	} finally {
@@ -64,6 +64,30 @@ test("bootstrap does not overwrite an existing local preferences file", function
 		});
 
 		assert.equal(fs.readFileSync(localPrefsPath, "utf8"), original);
+	} finally {
+		fs.rmSync(tmpHome, { recursive: true, force: true });
+		fs.rmSync(repoRoot, { recursive: true, force: true });
+	}
+});
+
+test("bootstrap migrates old ~/.assistant-preferences symlink to ~/.ai-pref-nsync", function() {
+	const repoRoot = copyRepoFixture();
+	const bootstrapScript = path.join(repoRoot, "scripts", "bootstrap-machine.sh");
+	const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "assistant-bootstrap-"));
+	try {
+		fs.mkdirSync(path.join(tmpHome, ".codex"), { recursive: true });
+		// Simulate old symlink from previous version
+		fs.symlinkSync(repoRoot, path.join(tmpHome, ".assistant-preferences"));
+		assert.equal(fs.lstatSync(path.join(tmpHome, ".assistant-preferences")).isSymbolicLink(), true);
+
+		execFileSync("zsh", [bootstrapScript], {
+			env: { ...process.env, HOME: tmpHome },
+			stdio: "pipe",
+		});
+
+		// Old symlink removed, new one created
+		assert.equal(fs.existsSync(path.join(tmpHome, ".assistant-preferences")), false, "Old symlink should be removed");
+		assert.equal(fs.realpathSync(path.join(tmpHome, ".ai-pref-nsync")), fs.realpathSync(repoRoot));
 	} finally {
 		fs.rmSync(tmpHome, { recursive: true, force: true });
 		fs.rmSync(repoRoot, { recursive: true, force: true });

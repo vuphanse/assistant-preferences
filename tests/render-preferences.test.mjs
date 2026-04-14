@@ -146,7 +146,7 @@ test("renderer includes the local-docs default location rule from personal profi
 
 	const codex = fs.readFileSync(path.join(homeDir, ".codex", "instructions.md"), "utf8");
 	assert.ok(
-		codex.includes("~/.assistant-preferences/local-docs/<project-name>/"),
+		codex.includes("~/.ai-pref-nsync/local-docs/<project-name>/"),
 		"Missing local-docs default location rule"
 	);
 });
